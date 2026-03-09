@@ -21,7 +21,7 @@ function useStore(key, init) {
 
 const S = {
   flocks: [
-    { id: "fa1", name: "FLOCK-A", house: "House 1", breed: "Hy-Line Brown", birdsPlaced: 5000, liveBirds: 4850, placedDate: "2024-09-10", ageWeeks: 17, source: "Star Hatchery", costPerBird: 650, notes: "" },
+    { id: "fa1", name: "FLOCK-Ab", house: "House 1", breed: "Hy-Line Brown", birdsPlaced: 5000, liveBirds: 4850, placedDate: "2024-09-10", ageWeeks: 17, source: "Star Hatchery", costPerBird: 650, notes: "" },
     { id: "fb2", name: "FLOCK-B", house: "House 2", breed: "Lohmann Brown", birdsPlaced: 4500, liveBirds: 4380, placedDate: "2024-11-08", ageWeeks: 17, source: "Gold Hatchery", costPerBird: 680, notes: "" },
     { id: "fc3", name: "FLOCK-C", house: "House 3", breed: "ISA Brown", birdsPlaced: 6000, liveBirds: 5920, placedDate: "2025-01-08", ageWeeks: 18, source: "Prime Hatchery", costPerBird: 700, notes: "New flock" },
   ],
