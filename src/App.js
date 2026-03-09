@@ -21,13 +21,13 @@ function useStore(key, init) {
 
 const S = {
   flocks: [
-    { id: "fa1", name: "FLOCK-Ab", house: "House 1", breed: "Hy-Line Brown", birdsPlaced: 5000, liveBirds: 4850, placedDate: "2024-09-10", ageWeeks: 17, source: "Star Hatchery", costPerBird: 650, notes: "" },
+    { id: "fa1", name: "FLOCK-Abb", house: "House 1", breed: "Hy-Line Brown", birdsPlaced: 5000, liveBirds: 4850, placedDate: "2024-09-10", ageWeeks: 17, source: "Star Hatchery", costPerBird: 650, notes: "" },
     { id: "fb2", name: "FLOCK-B", house: "House 2", breed: "Lohmann Brown", birdsPlaced: 4500, liveBirds: 4380, placedDate: "2024-11-08", ageWeeks: 17, source: "Gold Hatchery", costPerBird: 680, notes: "" },
     { id: "fc3", name: "FLOCK-C", house: "House 3", breed: "ISA Brown", birdsPlaced: 6000, liveBirds: 5920, placedDate: "2025-01-08", ageWeeks: 18, source: "Prime Hatchery", costPerBird: 700, notes: "New flock" },
   ],
-  mortality: [{ id: "m1", date: today(), flockId: "fa1", flockName: "FLOCK-A", house: "House 1", count: 5, cause: "Disease", disposal: "Buried", by: "Ahmed", notes: "Respiratory" }],
+  mortality: [{ id: "m1", date: today(), flockId: "fa1", flockName: "FLOCK-Ab", house: "House 1", count: 5, cause: "Disease", disposal: "Buried", by: "Ahmed", notes: "Respiratory" }],
   eggs: [
-    { id: "e1", date: today(), flockId: "fa1", flockName: "FLOCK-A", shift: "Morning", total: 4200, broken: 35, floor: 12, collector: "Saleem" },
+    { id: "e1", date: today(), flockId: "fa1", flockName: "FLOCK-Ab", shift: "Morning", total: 4200, broken: 35, floor: 12, collector: "Saleem" },
     { id: "e2", date: today(), flockId: "fb2", flockName: "FLOCK-B", shift: "Morning", total: 3900, broken: 28, floor: 9, collector: "Usman" },
   ],
   sales: [{ id: "s1", date: today(), buyer: "Market A", gradeA: 8000, gradeB: 2000, gradeC: 500, pricePerCrate: 820, status: "Paid" }],
@@ -36,7 +36,7 @@ const S = {
     { id: "fd2", type: "Layer Feed Phase 2", supplier: "Al-Khair Mills", batch: "AK-445", qty: 280, minQty: 400, costPerKg: 92, expiry: "2026-01-01", location: "Warehouse A" },
     { id: "fd3", type: "Limestone/Shell Grit", supplier: "Local Supplier", batch: "LS-22", qty: 900, minQty: 200, costPerKg: 15, expiry: "2026-06-01", location: "Warehouse B" },
   ],
-  feedUsage: [{ id: "fu1", date: today(), flockId: "fa1", flockName: "FLOCK-A", feedId: "fd1", feedType: "Layer Feed Phase 1", qty: 420, by: "Saleem", notes: "" }],
+  feedUsage: [{ id: "fu1", date: today(), flockId: "fa1", flockName: "FLOCK-Ab", feedId: "fd1", feedType: "Layer Feed Phase 1", qty: 420, by: "Saleem", notes: "" }],
   medicine: [
     { id: "med1", name: "Newcastle B1 Vaccine", type: "Vaccine", batch: "NB-2024", qty: 50000, unit: "Dose", costPerUnit: 0.5, expiry: "2025-08-01", mfg: "Intervet" },
     { id: "med2", name: "Oxytetracycline", type: "Antibiotic", batch: "OTC-22", qty: 5, unit: "kg", costPerUnit: 1200, expiry: "2025-12-01", mfg: "Fauji Pharma" },
