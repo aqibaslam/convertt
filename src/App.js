@@ -1,4 +1,8 @@
+// ── ALL IMPORTS MUST BE AT THE TOP ──
 import { useState, useCallback, useMemo } from "react";
+import { Routes, Route } from "react-router-dom";
+import HeroRoi from "./components/HeroRoi";
+import Header from "./components/Header";
 
 const uid = () => Math.random().toString(36).slice(2, 9);
 const today = () => new Date().toISOString().slice(0, 10);
@@ -21,13 +25,13 @@ function useStore(key, init) {
 
 const S = {
   flocks: [
-    { id: "fa1", name: "FLOCK-A", house: "House 1", breed: "Hy-Line Brown", birdsPlaced: 5000, liveBirds: 4850, placedDate: "2024-09-10", ageWeeks: 17, source: "Star Hatchery", costPerBird: 650, notes: "" },
+    { id: "fa1", name: "FLOCK-Abb", house: "House 1", breed: "Hy-Line Brown", birdsPlaced: 5000, liveBirds: 4850, placedDate: "2024-09-10", ageWeeks: 17, source: "Star Hatchery", costPerBird: 650, notes: "" },
     { id: "fb2", name: "FLOCK-B", house: "House 2", breed: "Lohmann Brown", birdsPlaced: 4500, liveBirds: 4380, placedDate: "2024-11-08", ageWeeks: 17, source: "Gold Hatchery", costPerBird: 680, notes: "" },
     { id: "fc3", name: "FLOCK-C", house: "House 3", breed: "ISA Brown", birdsPlaced: 6000, liveBirds: 5920, placedDate: "2025-01-08", ageWeeks: 18, source: "Prime Hatchery", costPerBird: 700, notes: "New flock" },
   ],
-  mortality: [{ id: "m1", date: today(), flockId: "fa1", flockName: "FLOCK-A", house: "House 1", count: 5, cause: "Disease", disposal: "Buried", by: "Ahmed", notes: "Respiratory" }],
+  mortality: [{ id: "m1", date: today(), flockId: "fa1", flockName: "FLOCK-Ab", house: "House 1", count: 5, cause: "Disease", disposal: "Buried", by: "Ahmed", notes: "Respiratory" }],
   eggs: [
-    { id: "e1", date: today(), flockId: "fa1", flockName: "FLOCK-A", shift: "Morning", total: 4200, broken: 35, floor: 12, collector: "Saleem" },
+    { id: "e1", date: today(), flockId: "fa1", flockName: "FLOCK-Ab", shift: "Morning", total: 4200, broken: 35, floor: 12, collector: "Saleem" },
     { id: "e2", date: today(), flockId: "fb2", flockName: "FLOCK-B", shift: "Morning", total: 3900, broken: 28, floor: 9, collector: "Usman" },
   ],
   sales: [{ id: "s1", date: today(), buyer: "Market A", gradeA: 8000, gradeB: 2000, gradeC: 500, pricePerCrate: 820, status: "Paid" }],
@@ -36,7 +40,7 @@ const S = {
     { id: "fd2", type: "Layer Feed Phase 2", supplier: "Al-Khair Mills", batch: "AK-445", qty: 280, minQty: 400, costPerKg: 92, expiry: "2026-01-01", location: "Warehouse A" },
     { id: "fd3", type: "Limestone/Shell Grit", supplier: "Local Supplier", batch: "LS-22", qty: 900, minQty: 200, costPerKg: 15, expiry: "2026-06-01", location: "Warehouse B" },
   ],
-  feedUsage: [{ id: "fu1", date: today(), flockId: "fa1", flockName: "FLOCK-A", feedId: "fd1", feedType: "Layer Feed Phase 1", qty: 420, by: "Saleem", notes: "" }],
+  feedUsage: [{ id: "fu1", date: today(), flockId: "fa1", flockName: "FLOCK-Ab", feedId: "fd1", feedType: "Layer Feed Phase 1", qty: 420, by: "Saleem", notes: "" }],
   medicine: [
     { id: "med1", name: "Newcastle B1 Vaccine", type: "Vaccine", batch: "NB-2024", qty: 50000, unit: "Dose", costPerUnit: 0.5, expiry: "2025-08-01", mfg: "Intervet" },
     { id: "med2", name: "Oxytetracycline", type: "Antibiotic", batch: "OTC-22", qty: 5, unit: "kg", costPerUnit: 1200, expiry: "2025-12-01", mfg: "Fauji Pharma" },
@@ -175,7 +179,10 @@ function ConfirmDlg({ open, msg, onYes, onNo }) {
   );
 }
 
-export default function PoultryApp() {
+// ─────────────────────────────────────────────
+// POULTRY DASHBOARD
+// ─────────────────────────────────────────────
+function PoultryApp() {
   const [page, setPage] = useState("dashboard");
   const [toasts, setToasts] = useState([]);
   const [confirm, setConfirm] = useState(null);
@@ -215,7 +222,6 @@ export default function PoultryApp() {
   const hdp = totalBirds > 0 ? (todayEggs / totalBirds * 100).toFixed(1) : "0.0";
   const lowFeed = feed.filter(f => f.qty <= f.minQty).length;
 
-  // SAVE HANDLERS
   const saveFlock = () => {
     if (!form.name || !form.birdsPlaced) { toast("Name and birds placed are required", "warn"); return; }
     const isNew = modal.mode === "add";
@@ -316,7 +322,6 @@ export default function PoultryApp() {
   ];
   const groups = [...new Set(navItems.map(n => n.group))];
 
-  // ── PAGES ──
   const PageDashboard = () => {
     const last7 = Array.from({ length: 7 }, (_, i) => {
       const d = new Date(); d.setDate(d.getDate() - (6 - i));
@@ -366,7 +371,6 @@ export default function PoultryApp() {
                   </div>
                 );
               })}
-              {flocks.length === 0 && <div style={{ color: C.muted, fontSize: 13 }}>No flocks added yet.</div>}
             </div>
           </Card>
         </div>
@@ -429,7 +433,7 @@ export default function PoultryApp() {
             </div>
           );
         })}
-        {flocks.length === 0 && <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 40, color: C.muted }}>No flocks yet. Click "+ Add Flock" to start.</div>}
+        {flocks.length === 0 && <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 40, color: C.muted }}>No flocks yet.</div>}
       </div>
     </div>
   );
@@ -455,7 +459,7 @@ export default function PoultryApp() {
                 <TD muted>{m.disposal}</TD><TD muted>{m.by}</TD><TD muted>{m.notes || "—"}</TD>
                 <TD><div style={{ display: "flex", gap: 5 }}>
                   <Btn sm variant="ghost" onClick={() => openEdit("mortality", m)}>✏️</Btn>
-                  <Btn sm variant="danger" onClick={() => askDel("Delete mortality record?", () => remove(setMortality, m.id))}>🗑️</Btn>
+                  <Btn sm variant="danger" onClick={() => askDel("Delete?", () => remove(setMortality, m.id))}>🗑️</Btn>
                 </div></TD>
               </tr>
             ))} />
@@ -488,7 +492,7 @@ export default function PoultryApp() {
                   <TD muted>{e.collector}</TD>
                   <TD><div style={{ display: "flex", gap: 5 }}>
                     <Btn sm variant="ghost" onClick={() => openEdit("egg", e)}>✏️</Btn>
-                    <Btn sm variant="danger" onClick={() => askDel("Delete record?", () => remove(setEggs, e.id))}>🗑️</Btn>
+                    <Btn sm variant="danger" onClick={() => askDel("Delete?", () => remove(setEggs, e.id))}>🗑️</Btn>
                   </div></TD>
                 </tr>
               );
@@ -524,7 +528,7 @@ export default function PoultryApp() {
                   <TD><Badge color={g.status === "Paid" ? "green" : g.status === "Pending" ? "red" : "yellow"}>{g.status}</Badge></TD>
                   <TD><div style={{ display: "flex", gap: 5 }}>
                     <Btn sm variant="ghost" onClick={() => openEdit("sale", g)}>✏️</Btn>
-                    <Btn sm variant="danger" onClick={() => askDel("Delete sale?", () => remove(setSales, g.id))}>🗑️</Btn>
+                    <Btn sm variant="danger" onClick={() => askDel("Delete?", () => remove(setSales, g.id))}>🗑️</Btn>
                   </div></TD>
                 </tr>
               );
@@ -536,7 +540,7 @@ export default function PoultryApp() {
 
   const PageFeed = () => (
     <div>
-      {feed.filter(f => f.qty <= f.minQty).map(f => <div key={f.id} style={{ background: "rgba(248,81,73,.1)", border: "1px solid rgba(248,81,73,.3)", borderRadius: 10, padding: "11px 16px", marginBottom: 10, fontSize: 13, color: C.red }}>🚨 LOW STOCK: <b>{f.type}</b> — {fmtN(f.qty)}kg (min: {fmtN(f.minQty)}kg)</div>)}
+      {feed.filter(f => f.qty <= f.minQty).map(f => <div key={f.id} style={{ background: "rgba(248,81,73,.1)", border: "1px solid rgba(248,81,73,.3)", borderRadius: 10, padding: "11px 16px", marginBottom: 10, fontSize: 13, color: C.red }}>🚨 LOW: <b>{f.type}</b> — {fmtN(f.qty)}kg</div>)}
       <Card title="Feed Inventory" action={<><Btn variant="ghost" onClick={() => openAdd("feedUsage")}>− Record Usage</Btn><Btn onClick={() => openAdd("feed")}>+ Add Stock</Btn></>}>
         <DataTable heads={["Feed Type", "Supplier", "Batch", "Stock (kg)", "Min Level", "Level", "₨/kg", "Expiry", "Status", ""]}
           rows={feed.map(f => {
@@ -552,7 +556,7 @@ export default function PoultryApp() {
                 <TD><Badge color={col === C.red ? "red" : col === C.accent ? "yellow" : "green"}>{st}</Badge></TD>
                 <TD><div style={{ display: "flex", gap: 5 }}>
                   <Btn sm variant="ghost" onClick={() => openEdit("feed", f)}>✏️</Btn>
-                  <Btn sm variant="danger" onClick={() => askDel("Delete feed record?", () => remove(setFeed, f.id))}>🗑️</Btn>
+                  <Btn sm variant="danger" onClick={() => askDel("Delete?", () => remove(setFeed, f.id))}>🗑️</Btn>
                 </div></TD>
               </tr>
             );
@@ -564,7 +568,7 @@ export default function PoultryApp() {
             <tr key={f.id}>
               <TD>{f.date}</TD><TD bold>{f.flockName}</TD><TD>{f.feedType}</TD>
               <TD bold>{fmtN(f.qty)} kg</TD><TD>{f.by}</TD><TD muted>{f.notes || "—"}</TD>
-              <TD><Btn sm variant="danger" onClick={() => askDel("Delete usage record?", () => remove(setFeedUsage, f.id))}>🗑️</Btn></TD>
+              <TD><Btn sm variant="danger" onClick={() => askDel("Delete?", () => remove(setFeedUsage, f.id))}>🗑️</Btn></TD>
             </tr>
           ))} />
       </Card>
@@ -587,7 +591,7 @@ export default function PoultryApp() {
                 <TD><Badge color={exp ? "red" : soon ? "yellow" : "green"}>{exp ? "Expired" : soon ? "Exp. Soon" : "In Stock"}</Badge></TD>
                 <TD><div style={{ display: "flex", gap: 5 }}>
                   <Btn sm variant="ghost" onClick={() => openEdit("med", m)}>✏️</Btn>
-                  <Btn sm variant="danger" onClick={() => askDel("Delete medicine?", () => remove(setMedicine, m.id))}>🗑️</Btn>
+                  <Btn sm variant="danger" onClick={() => askDel("Delete?", () => remove(setMedicine, m.id))}>🗑️</Btn>
                 </div></TD>
               </tr>
             );
@@ -602,7 +606,7 @@ export default function PoultryApp() {
               <TD>{m.wd > 0 ? <Badge color="yellow">{m.wd} days</Badge> : "None"}</TD>
               <TD><div style={{ display: "flex", gap: 5 }}>
                 <Btn sm variant="ghost" onClick={() => openEdit("medUsage", m)}>✏️</Btn>
-                <Btn sm variant="danger" onClick={() => askDel("Delete treatment record?", () => remove(setMedUsage, m.id))}>🗑️</Btn>
+                <Btn sm variant="danger" onClick={() => askDel("Delete?", () => remove(setMedUsage, m.id))}>🗑️</Btn>
               </div></TD>
             </tr>
           ))} />
@@ -624,7 +628,7 @@ export default function PoultryApp() {
               <TD><Badge color={e.condition === "Excellent" ? "green" : e.condition === "Good" ? "blue" : e.condition === "Fair" ? "yellow" : "red"}>{e.condition}</Badge></TD>
               <TD><div style={{ display: "flex", gap: 5 }}>
                 <Btn sm variant="ghost" onClick={() => openEdit("equip", e)}>✏️</Btn>
-                <Btn sm variant="danger" onClick={() => askDel("Delete equipment?", () => remove(setEquipment, e.id))}>🗑️</Btn>
+                <Btn sm variant="danger" onClick={() => askDel("Delete?", () => remove(setEquipment, e.id))}>🗑️</Btn>
               </div></TD>
             </tr>
           );
@@ -651,7 +655,7 @@ export default function PoultryApp() {
                 <TD>{e.payee}</TD><TD muted>{e.pay}</TD>
                 <TD><div style={{ display: "flex", gap: 5 }}>
                   <Btn sm variant="ghost" onClick={() => openEdit("expense", e)}>✏️</Btn>
-                  <Btn sm variant="danger" onClick={() => askDel("Delete expense?", () => remove(setExpenses, e.id))}>🗑️</Btn>
+                  <Btn sm variant="danger" onClick={() => askDel("Delete?", () => remove(setExpenses, e.id))}>🗑️</Btn>
                 </div></TD>
               </tr>
             ))} />
@@ -715,24 +719,6 @@ export default function PoultryApp() {
             </Card>
           ))}
         </div>
-        <Card title="Flock Performance Table">
-          <DataTable heads={["Flock", "House", "Breed", "Placed", "Live", "Deaths", "Mortality%", "Age (wks)", "Phase"]}
-            rows={flocks.map(f => {
-              const deaths = mortality.filter(m => m.flockId === f.id).reduce((s, m) => s + m.count, 0);
-              const mPct = ((f.birdsPlaced - f.liveBirds) / f.birdsPlaced * 100).toFixed(2);
-              const p = getPhase(f.ageWeeks, f.placedDate);
-              return (
-                <tr key={f.id}>
-                  <TD bold>{f.name}</TD><TD>{f.house}</TD><TD>{f.breed}</TD>
-                  <TD>{fmtN(f.birdsPlaced)}</TD><TD green bold>{fmtN(f.liveBirds)}</TD>
-                  <TD red>{deaths}</TD>
-                  <TD style={{ color: +mPct > 5 ? C.red : +mPct > 2 ? C.accent : C.green }}>{mPct}%</TD>
-                  <TD>{f.ageWeeks + weeksAgo(f.placedDate)}</TD>
-                  <TD><span style={{ background: p.col + "22", color: p.col, borderRadius: 20, padding: "2px 9px", fontSize: 11, fontWeight: 700 }}>{p.label}</span></TD>
-                </tr>
-              );
-            })} />
-        </Card>
       </div>
     );
   };
@@ -740,68 +726,17 @@ export default function PoultryApp() {
   const Pages = { dashboard: PageDashboard, flocks: PageFlocks, mortality: PageMortality, eggs: PageEggs, sales: PageSales, feed: PageFeed, medicine: PageMedicine, equipment: PageEquipment, expenses: PageExpenses, revenue: PageRevenue, reports: PageReports };
   const CurrentPage = Pages[page] || PageDashboard;
 
-  // ── MODAL FORMS ──
   const MODALS = modal && {
-    flock: { title: modal.mode === "add" ? "🐣 Add New Flock" : "✏️ Edit Flock", onSave: saveFlock, body: (<>
-      <Row><FG label="Flock Name *" half><Inp placeholder="FLOCK-2025-A" value={form.name || ""} onChange={e => sf("name", e.target.value)} /></FG><FG label="House / Shed" half><Inp placeholder="House 1" value={form.house || ""} onChange={e => sf("house", e.target.value)} /></FG></Row>
-      <Row><FG label="Breed" half><Sel value={form.breed || "Hy-Line Brown"} onChange={e => sf("breed", e.target.value)}>{["Hy-Line Brown","Lohmann Brown","ISA Brown","Bovans Brown","Novogen Brown","Shaver White","Other"].map(b=><option key={b}>{b}</option>)}</Sel></FG><FG label="Birds Placed *" half><Inp type="number" value={form.birdsPlaced||""} onChange={e=>sf("birdsPlaced",e.target.value)}/></FG></Row>
-      {modal.mode==="edit" && <Row><FG label="Current Live Birds" half><Inp type="number" value={form.liveBirds||""} onChange={e=>sf("liveBirds",e.target.value)}/></FG></Row>}
-      <Row><FG label="Date Placed" half><Inp type="date" value={form.placedDate||today()} onChange={e=>sf("placedDate",e.target.value)}/></FG><FG label="Age at Placement (wks)" half><Inp type="number" value={form.ageWeeks||""} onChange={e=>sf("ageWeeks",e.target.value)}/></FG></Row>
-      <Row><FG label="Source / Hatchery" half><Inp value={form.source||""} onChange={e=>sf("source",e.target.value)}/></FG><FG label="Cost per Bird (₨)" half><Inp type="number" value={form.costPerBird||""} onChange={e=>sf("costPerBird",e.target.value)}/></FG></Row>
-      <FG label="Notes"><Txt value={form.notes||""} onChange={e=>sf("notes",e.target.value)}/></FG>
-    </>) },
-    mortality: { title: modal.mode === "add" ? "☠️ Log Mortality" : "✏️ Edit Mortality", onSave: saveMortality, body: (<>
-      <Row><FG label="Date" half><Inp type="date" value={form.date||today()} onChange={e=>sf("date",e.target.value)}/></FG><FG label="Flock *" half><Sel value={form.flockId||""} onChange={e=>sf("flockId",e.target.value)}><option value="">— Select —</option>{flocks.map(f=><option key={f.id} value={f.id}>{f.name}</option>)}</Sel></FG></Row>
-      <Row><FG label="Deaths *" half><Inp type="number" value={form.count||""} onChange={e=>sf("count",e.target.value)}/></FG><FG label="Cause" half><Sel value={form.cause||"Unknown"} onChange={e=>sf("cause",e.target.value)}>{["Disease","Heat Stress","Trauma/Injury","Prolapse","Pecking","Unknown","Other"].map(c=><option key={c}>{c}</option>)}</Sel></FG></Row>
-      <Row><FG label="Disposal" half><Sel value={form.disposal||"Buried"} onChange={e=>sf("disposal",e.target.value)}>{["Buried","Incinerated","Composted","Vendor Collected"].map(c=><option key={c}>{c}</option>)}</Sel></FG><FG label="Reported By" half><Inp value={form.by||""} onChange={e=>sf("by",e.target.value)}/></FG></Row>
-      <FG label="Notes"><Txt value={form.notes||""} onChange={e=>sf("notes",e.target.value)}/></FG>
-    </>) },
-    egg: { title: modal.mode === "add" ? "🥚 Record Egg Collection" : "✏️ Edit Collection", onSave: saveEgg, body: (<>
-      <Row><FG label="Date" half><Inp type="date" value={form.date||today()} onChange={e=>sf("date",e.target.value)}/></FG><FG label="Flock *" half><Sel value={form.flockId||""} onChange={e=>sf("flockId",e.target.value)}><option value="">— Select —</option>{flocks.map(f=><option key={f.id} value={f.id}>{f.name}</option>)}</Sel></FG></Row>
-      <Row><FG label="Shift" half><Sel value={form.shift||"Morning"} onChange={e=>sf("shift",e.target.value)}>{["Morning","Afternoon","Evening"].map(s=><option key={s}>{s}</option>)}</Sel></FG><FG label="Total Eggs *" half><Inp type="number" value={form.total||""} onChange={e=>sf("total",e.target.value)}/></FG></Row>
-      <Row><FG label="Broken" half><Inp type="number" value={form.broken||0} onChange={e=>sf("broken",e.target.value)}/></FG><FG label="Floor Eggs" half><Inp type="number" value={form.floor||0} onChange={e=>sf("floor",e.target.value)}/></FG></Row>
-      <FG label="Collector"><Inp value={form.collector||""} onChange={e=>sf("collector",e.target.value)}/></FG>
-    </>) },
-    sale: { title: modal.mode === "add" ? "⚖️ Record Sale" : "✏️ Edit Sale", onSave: saveSale, body: (<>
-      <Row><FG label="Date" half><Inp type="date" value={form.date||today()} onChange={e=>sf("date",e.target.value)}/></FG><FG label="Buyer *" half><Inp value={form.buyer||""} onChange={e=>sf("buyer",e.target.value)}/></FG></Row>
-      <Row><FG label="Grade A (eggs)" half><Inp type="number" value={form.gradeA||0} onChange={e=>sf("gradeA",e.target.value)}/></FG><FG label="Grade B" half><Inp type="number" value={form.gradeB||0} onChange={e=>sf("gradeB",e.target.value)}/></FG></Row>
-      <Row><FG label="Grade C" half><Inp type="number" value={form.gradeC||0} onChange={e=>sf("gradeC",e.target.value)}/></FG><FG label="Price / Crate (₨) *" half><Inp type="number" value={form.pricePerCrate||""} onChange={e=>sf("pricePerCrate",e.target.value)}/></FG></Row>
-      <FG label="Payment Status"><Sel value={form.status||"Paid"} onChange={e=>sf("status",e.target.value)}>{["Paid","Pending","Partial"].map(s=><option key={s}>{s}</option>)}</Sel></FG>
-    </>) },
-    feed: { title: modal.mode === "add" ? "🌾 Add Feed Stock" : "✏️ Edit Feed", onSave: saveFeedStock, body: (<>
-      <Row><FG label="Feed Type *" half><Sel value={form.type||""} onChange={e=>sf("type",e.target.value)}><option value="">— Select —</option>{["Chick Starter","Grower Feed","Developer Feed","Layer Feed Phase 1","Layer Feed Phase 2","Limestone/Shell Grit","Vitamin Supplement","Custom"].map(t=><option key={t}>{t}</option>)}</Sel></FG><FG label="Supplier" half><Inp value={form.supplier||""} onChange={e=>sf("supplier",e.target.value)}/></FG></Row>
-      <Row><FG label="Batch No." half><Inp value={form.batch||""} onChange={e=>sf("batch",e.target.value)}/></FG><FG label="Quantity (kg) *" half><Inp type="number" value={form.qty||""} onChange={e=>sf("qty",e.target.value)}/></FG></Row>
-      <Row><FG label="Cost/kg (₨)" half><Inp type="number" value={form.costPerKg||""} onChange={e=>sf("costPerKg",e.target.value)}/></FG><FG label="Min Stock (kg)" half><Inp type="number" value={form.minQty||500} onChange={e=>sf("minQty",e.target.value)}/></FG></Row>
-      <Row><FG label="Expiry Date" half><Inp type="date" value={form.expiry||""} onChange={e=>sf("expiry",e.target.value)}/></FG><FG label="Storage Location" half><Inp value={form.location||""} onChange={e=>sf("location",e.target.value)}/></FG></Row>
-    </>) },
-    feedUsage: { title: "🌾 Record Feed Usage", onSave: saveFeedUsage, body: (<>
-      <Row><FG label="Date" half><Inp type="date" value={form.date||today()} onChange={e=>sf("date",e.target.value)}/></FG><FG label="Flock *" half><Sel value={form.flockId||""} onChange={e=>sf("flockId",e.target.value)}><option value="">— Select —</option>{flocks.map(f=><option key={f.id} value={f.id}>{f.name}</option>)}</Sel></FG></Row>
-      <Row><FG label="Feed *" half><Sel value={form.feedId||""} onChange={e=>sf("feedId",e.target.value)}><option value="">— Select —</option>{feed.map(f=><option key={f.id} value={f.id}>{f.type} ({fmtN(f.qty)}kg)</option>)}</Sel></FG><FG label="Qty Used (kg) *" half><Inp type="number" value={form.qty||""} onChange={e=>sf("qty",e.target.value)}/></FG></Row>
-      <Row><FG label="Fed By" half><Inp value={form.by||""} onChange={e=>sf("by",e.target.value)}/></FG><FG label="Notes" half><Inp value={form.notes||""} onChange={e=>sf("notes",e.target.value)}/></FG></Row>
-    </>) },
-    med: { title: modal.mode === "add" ? "💊 Add Medicine" : "✏️ Edit Medicine", onSave: saveMed, body: (<>
-      <Row><FG label="Name *" half><Inp value={form.name||""} onChange={e=>sf("name",e.target.value)}/></FG><FG label="Type" half><Sel value={form.type||"Vaccine"} onChange={e=>sf("type",e.target.value)}>{["Vaccine","Antibiotic","Vitamin","Dewormer","Disinfectant","Other"].map(t=><option key={t}>{t}</option>)}</Sel></FG></Row>
-      <Row><FG label="Batch No." half><Inp value={form.batch||""} onChange={e=>sf("batch",e.target.value)}/></FG><FG label="Quantity" half><Inp type="number" value={form.qty||""} onChange={e=>sf("qty",e.target.value)}/></FG></Row>
-      <Row><FG label="Unit" half><Sel value={form.unit||"Dose"} onChange={e=>sf("unit",e.target.value)}>{["Dose","ml","litre","tablet","sachet","kg"].map(u=><option key={u}>{u}</option>)}</Sel></FG><FG label="Cost/Unit (₨)" half><Inp type="number" value={form.costPerUnit||""} onChange={e=>sf("costPerUnit",e.target.value)}/></FG></Row>
-      <Row><FG label="Expiry Date" half><Inp type="date" value={form.expiry||""} onChange={e=>sf("expiry",e.target.value)}/></FG><FG label="Manufacturer" half><Inp value={form.mfg||""} onChange={e=>sf("mfg",e.target.value)}/></FG></Row>
-    </>) },
-    medUsage: { title: modal.mode === "add" ? "💉 Record Treatment" : "✏️ Edit Treatment", onSave: saveMedUsage, body: (<>
-      <Row><FG label="Date" half><Inp type="date" value={form.date||today()} onChange={e=>sf("date",e.target.value)}/></FG><FG label="Flock *" half><Sel value={form.flockId||""} onChange={e=>sf("flockId",e.target.value)}><option value="">— Select —</option>{flocks.map(f=><option key={f.id} value={f.id}>{f.name}</option>)}</Sel></FG></Row>
-      <Row><FG label="Medicine *" half><Sel value={form.medId||""} onChange={e=>sf("medId",e.target.value)}><option value="">— Select —</option>{medicine.map(m=><option key={m.id} value={m.id}>{m.name}</option>)}</Sel></FG><FG label="Dose / Qty" half><Inp value={form.dose||""} onChange={e=>sf("dose",e.target.value)}/></FG></Row>
-      <Row><FG label="Route" half><Sel value={form.route||"Drinking Water"} onChange={e=>sf("route",e.target.value)}>{["Drinking Water","Eye Drop","Injection","Spray","Feed"].map(r=><option key={r}>{r}</option>)}</Sel></FG><FG label="Administered By" half><Inp value={form.by||""} onChange={e=>sf("by",e.target.value)}/></FG></Row>
-      <FG label="Withdrawal Period (days)"><Inp type="number" value={form.wd||0} onChange={e=>sf("wd",e.target.value)}/></FG>
-    </>) },
-    equip: { title: modal.mode === "add" ? "🔧 Add Equipment" : "✏️ Edit Equipment", onSave: saveEquip, body: (<>
-      <Row><FG label="Name *" half><Inp value={form.name||""} onChange={e=>sf("name",e.target.value)}/></FG><FG label="Category" half><Sel value={form.cat||"Other"} onChange={e=>sf("cat",e.target.value)}>{["Feeding System","Watering System","Egg Collection","Ventilation","Lighting","Heating/Cooling","Caging","Transport","Other"].map(c=><option key={c}>{c}</option>)}</Sel></FG></Row>
-      <Row><FG label="Quantity" half><Inp type="number" value={form.qty||1} onChange={e=>sf("qty",e.target.value)}/></FG><FG label="Location" half><Inp value={form.location||""} onChange={e=>sf("location",e.target.value)}/></FG></Row>
-      <Row><FG label="Purchase Date" half><Inp type="date" value={form.purchaseDate||today()} onChange={e=>sf("purchaseDate",e.target.value)}/></FG><FG label="Last Maintenance" half><Inp type="date" value={form.lastMaint||""} onChange={e=>sf("lastMaint",e.target.value)}/></FG></Row>
-      <Row><FG label="Next Maintenance" half><Inp type="date" value={form.nextMaint||""} onChange={e=>sf("nextMaint",e.target.value)}/></FG><FG label="Condition" half><Sel value={form.condition||"Good"} onChange={e=>sf("condition",e.target.value)}>{["Excellent","Good","Fair","Needs Repair"].map(c=><option key={c}>{c}</option>)}</Sel></FG></Row>
-    </>) },
-    expense: { title: modal.mode === "add" ? "💸 Add Expense" : "✏️ Edit Expense", onSave: saveExpense, body: (<>
-      <Row><FG label="Date" half><Inp type="date" value={form.date||today()} onChange={e=>sf("date",e.target.value)}/></FG><FG label="Category" half><Sel value={form.cat||"Miscellaneous"} onChange={e=>sf("cat",e.target.value)}>{["Feed Purchase","Medicine/Vaccine","Labour/Wages","Utilities","Equipment Maintenance","Bird Purchase","Transport","Miscellaneous"].map(c=><option key={c}>{c}</option>)}</Sel></FG></Row>
-      <Row><FG label="Description" half><Inp value={form.desc||""} onChange={e=>sf("desc",e.target.value)}/></FG><FG label="Amount (₨) *" half><Inp type="number" value={form.amount||""} onChange={e=>sf("amount",e.target.value)}/></FG></Row>
-      <Row><FG label="Paid To" half><Inp value={form.payee||""} onChange={e=>sf("payee",e.target.value)}/></FG><FG label="Payment Method" half><Sel value={form.pay||"Cash"} onChange={e=>sf("pay",e.target.value)}>{["Cash","Bank Transfer","Cheque","Credit"].map(p=><option key={p}>{p}</option>)}</Sel></FG></Row>
-    </>) },
+    flock: { title: modal.mode === "add" ? "🐣 Add New Flock" : "✏️ Edit Flock", onSave: saveFlock, body: (<><Row><FG label="Flock Name *" half><Inp placeholder="FLOCK-2025-A" value={form.name || ""} onChange={e => sf("name", e.target.value)} /></FG><FG label="House / Shed" half><Inp placeholder="House 1" value={form.house || ""} onChange={e => sf("house", e.target.value)} /></FG></Row><Row><FG label="Breed" half><Sel value={form.breed || "Hy-Line Brown"} onChange={e => sf("breed", e.target.value)}>{["Hy-Line Brown","Lohmann Brown","ISA Brown","Bovans Brown","Novogen Brown","Shaver White","Other"].map(b=><option key={b}>{b}</option>)}</Sel></FG><FG label="Birds Placed *" half><Inp type="number" value={form.birdsPlaced||""} onChange={e=>sf("birdsPlaced",e.target.value)}/></FG></Row>{modal.mode==="edit" && <Row><FG label="Current Live Birds" half><Inp type="number" value={form.liveBirds||""} onChange={e=>sf("liveBirds",e.target.value)}/></FG></Row>}<Row><FG label="Date Placed" half><Inp type="date" value={form.placedDate||today()} onChange={e=>sf("placedDate",e.target.value)}/></FG><FG label="Age at Placement (wks)" half><Inp type="number" value={form.ageWeeks||""} onChange={e=>sf("ageWeeks",e.target.value)}/></FG></Row><Row><FG label="Source / Hatchery" half><Inp value={form.source||""} onChange={e=>sf("source",e.target.value)}/></FG><FG label="Cost per Bird (₨)" half><Inp type="number" value={form.costPerBird||""} onChange={e=>sf("costPerBird",e.target.value)}/></FG></Row><FG label="Notes"><Txt value={form.notes||""} onChange={e=>sf("notes",e.target.value)}/></FG></>) },
+    mortality: { title: modal.mode === "add" ? "☠️ Log Mortality" : "✏️ Edit Mortality", onSave: saveMortality, body: (<><Row><FG label="Date" half><Inp type="date" value={form.date||today()} onChange={e=>sf("date",e.target.value)}/></FG><FG label="Flock *" half><Sel value={form.flockId||""} onChange={e=>sf("flockId",e.target.value)}><option value="">— Select —</option>{flocks.map(f=><option key={f.id} value={f.id}>{f.name}</option>)}</Sel></FG></Row><Row><FG label="Deaths *" half><Inp type="number" value={form.count||""} onChange={e=>sf("count",e.target.value)}/></FG><FG label="Cause" half><Sel value={form.cause||"Unknown"} onChange={e=>sf("cause",e.target.value)}>{["Disease","Heat Stress","Trauma/Injury","Prolapse","Pecking","Unknown","Other"].map(c=><option key={c}>{c}</option>)}</Sel></FG></Row><Row><FG label="Disposal" half><Sel value={form.disposal||"Buried"} onChange={e=>sf("disposal",e.target.value)}>{["Buried","Incinerated","Composted","Vendor Collected"].map(c=><option key={c}>{c}</option>)}</Sel></FG><FG label="Reported By" half><Inp value={form.by||""} onChange={e=>sf("by",e.target.value)}/></FG></Row><FG label="Notes"><Txt value={form.notes||""} onChange={e=>sf("notes",e.target.value)}/></FG></>) },
+    egg: { title: modal.mode === "add" ? "🥚 Record Egg Collection" : "✏️ Edit Collection", onSave: saveEgg, body: (<><Row><FG label="Date" half><Inp type="date" value={form.date||today()} onChange={e=>sf("date",e.target.value)}/></FG><FG label="Flock *" half><Sel value={form.flockId||""} onChange={e=>sf("flockId",e.target.value)}><option value="">— Select —</option>{flocks.map(f=><option key={f.id} value={f.id}>{f.name}</option>)}</Sel></FG></Row><Row><FG label="Shift" half><Sel value={form.shift||"Morning"} onChange={e=>sf("shift",e.target.value)}>{["Morning","Afternoon","Evening"].map(s=><option key={s}>{s}</option>)}</Sel></FG><FG label="Total Eggs *" half><Inp type="number" value={form.total||""} onChange={e=>sf("total",e.target.value)}/></FG></Row><Row><FG label="Broken" half><Inp type="number" value={form.broken||0} onChange={e=>sf("broken",e.target.value)}/></FG><FG label="Floor Eggs" half><Inp type="number" value={form.floor||0} onChange={e=>sf("floor",e.target.value)}/></FG></Row><FG label="Collector"><Inp value={form.collector||""} onChange={e=>sf("collector",e.target.value)}/></FG></>) },
+    sale: { title: modal.mode === "add" ? "⚖️ Record Sale" : "✏️ Edit Sale", onSave: saveSale, body: (<><Row><FG label="Date" half><Inp type="date" value={form.date||today()} onChange={e=>sf("date",e.target.value)}/></FG><FG label="Buyer *" half><Inp value={form.buyer||""} onChange={e=>sf("buyer",e.target.value)}/></FG></Row><Row><FG label="Grade A (eggs)" half><Inp type="number" value={form.gradeA||0} onChange={e=>sf("gradeA",e.target.value)}/></FG><FG label="Grade B" half><Inp type="number" value={form.gradeB||0} onChange={e=>sf("gradeB",e.target.value)}/></FG></Row><Row><FG label="Grade C" half><Inp type="number" value={form.gradeC||0} onChange={e=>sf("gradeC",e.target.value)}/></FG><FG label="Price / Crate (₨) *" half><Inp type="number" value={form.pricePerCrate||""} onChange={e=>sf("pricePerCrate",e.target.value)}/></FG></Row><FG label="Payment Status"><Sel value={form.status||"Paid"} onChange={e=>sf("status",e.target.value)}>{["Paid","Pending","Partial"].map(s=><option key={s}>{s}</option>)}</Sel></FG></>) },
+    feed: { title: modal.mode === "add" ? "🌾 Add Feed Stock" : "✏️ Edit Feed", onSave: saveFeedStock, body: (<><Row><FG label="Feed Type *" half><Sel value={form.type||""} onChange={e=>sf("type",e.target.value)}><option value="">— Select —</option>{["Chick Starter","Grower Feed","Developer Feed","Layer Feed Phase 1","Layer Feed Phase 2","Limestone/Shell Grit","Vitamin Supplement","Custom"].map(t=><option key={t}>{t}</option>)}</Sel></FG><FG label="Supplier" half><Inp value={form.supplier||""} onChange={e=>sf("supplier",e.target.value)}/></FG></Row><Row><FG label="Batch No." half><Inp value={form.batch||""} onChange={e=>sf("batch",e.target.value)}/></FG><FG label="Quantity (kg) *" half><Inp type="number" value={form.qty||""} onChange={e=>sf("qty",e.target.value)}/></FG></Row><Row><FG label="Cost/kg (₨)" half><Inp type="number" value={form.costPerKg||""} onChange={e=>sf("costPerKg",e.target.value)}/></FG><FG label="Min Stock (kg)" half><Inp type="number" value={form.minQty||500} onChange={e=>sf("minQty",e.target.value)}/></FG></Row><Row><FG label="Expiry Date" half><Inp type="date" value={form.expiry||""} onChange={e=>sf("expiry",e.target.value)}/></FG><FG label="Storage Location" half><Inp value={form.location||""} onChange={e=>sf("location",e.target.value)}/></FG></Row></>) },
+    feedUsage: { title: "🌾 Record Feed Usage", onSave: saveFeedUsage, body: (<><Row><FG label="Date" half><Inp type="date" value={form.date||today()} onChange={e=>sf("date",e.target.value)}/></FG><FG label="Flock *" half><Sel value={form.flockId||""} onChange={e=>sf("flockId",e.target.value)}><option value="">— Select —</option>{flocks.map(f=><option key={f.id} value={f.id}>{f.name}</option>)}</Sel></FG></Row><Row><FG label="Feed *" half><Sel value={form.feedId||""} onChange={e=>sf("feedId",e.target.value)}><option value="">— Select —</option>{feed.map(f=><option key={f.id} value={f.id}>{f.type} ({fmtN(f.qty)}kg)</option>)}</Sel></FG><FG label="Qty Used (kg) *" half><Inp type="number" value={form.qty||""} onChange={e=>sf("qty",e.target.value)}/></FG></Row><Row><FG label="Fed By" half><Inp value={form.by||""} onChange={e=>sf("by",e.target.value)}/></FG><FG label="Notes" half><Inp value={form.notes||""} onChange={e=>sf("notes",e.target.value)}/></FG></Row></>) },
+    med: { title: modal.mode === "add" ? "💊 Add Medicine" : "✏️ Edit Medicine", onSave: saveMed, body: (<><Row><FG label="Name *" half><Inp value={form.name||""} onChange={e=>sf("name",e.target.value)}/></FG><FG label="Type" half><Sel value={form.type||"Vaccine"} onChange={e=>sf("type",e.target.value)}>{["Vaccine","Antibiotic","Vitamin","Dewormer","Disinfectant","Other"].map(t=><option key={t}>{t}</option>)}</Sel></FG></Row><Row><FG label="Batch No." half><Inp value={form.batch||""} onChange={e=>sf("batch",e.target.value)}/></FG><FG label="Quantity" half><Inp type="number" value={form.qty||""} onChange={e=>sf("qty",e.target.value)}/></FG></Row><Row><FG label="Unit" half><Sel value={form.unit||"Dose"} onChange={e=>sf("unit",e.target.value)}>{["Dose","ml","litre","tablet","sachet","kg"].map(u=><option key={u}>{u}</option>)}</Sel></FG><FG label="Cost/Unit (₨)" half><Inp type="number" value={form.costPerUnit||""} onChange={e=>sf("costPerUnit",e.target.value)}/></FG></Row><Row><FG label="Expiry Date" half><Inp type="date" value={form.expiry||""} onChange={e=>sf("expiry",e.target.value)}/></FG><FG label="Manufacturer" half><Inp value={form.mfg||""} onChange={e=>sf("mfg",e.target.value)}/></FG></Row></>) },
+    medUsage: { title: modal.mode === "add" ? "💉 Record Treatment" : "✏️ Edit Treatment", onSave: saveMedUsage, body: (<><Row><FG label="Date" half><Inp type="date" value={form.date||today()} onChange={e=>sf("date",e.target.value)}/></FG><FG label="Flock *" half><Sel value={form.flockId||""} onChange={e=>sf("flockId",e.target.value)}><option value="">— Select —</option>{flocks.map(f=><option key={f.id} value={f.id}>{f.name}</option>)}</Sel></FG></Row><Row><FG label="Medicine *" half><Sel value={form.medId||""} onChange={e=>sf("medId",e.target.value)}><option value="">— Select —</option>{medicine.map(m=><option key={m.id} value={m.id}>{m.name}</option>)}</Sel></FG><FG label="Dose / Qty" half><Inp value={form.dose||""} onChange={e=>sf("dose",e.target.value)}/></FG></Row><Row><FG label="Route" half><Sel value={form.route||"Drinking Water"} onChange={e=>sf("route",e.target.value)}>{["Drinking Water","Eye Drop","Injection","Spray","Feed"].map(r=><option key={r}>{r}</option>)}</Sel></FG><FG label="Administered By" half><Inp value={form.by||""} onChange={e=>sf("by",e.target.value)}/></FG></Row><FG label="Withdrawal Period (days)"><Inp type="number" value={form.wd||0} onChange={e=>sf("wd",e.target.value)}/></FG></>) },
+    equip: { title: modal.mode === "add" ? "🔧 Add Equipment" : "✏️ Edit Equipment", onSave: saveEquip, body: (<><Row><FG label="Name *" half><Inp value={form.name||""} onChange={e=>sf("name",e.target.value)}/></FG><FG label="Category" half><Sel value={form.cat||"Other"} onChange={e=>sf("cat",e.target.value)}>{["Feeding System","Watering System","Egg Collection","Ventilation","Lighting","Heating/Cooling","Caging","Transport","Other"].map(c=><option key={c}>{c}</option>)}</Sel></FG></Row><Row><FG label="Quantity" half><Inp type="number" value={form.qty||1} onChange={e=>sf("qty",e.target.value)}/></FG><FG label="Location" half><Inp value={form.location||""} onChange={e=>sf("location",e.target.value)}/></FG></Row><Row><FG label="Purchase Date" half><Inp type="date" value={form.purchaseDate||today()} onChange={e=>sf("purchaseDate",e.target.value)}/></FG><FG label="Last Maintenance" half><Inp type="date" value={form.lastMaint||""} onChange={e=>sf("lastMaint",e.target.value)}/></FG></Row><Row><FG label="Next Maintenance" half><Inp type="date" value={form.nextMaint||""} onChange={e=>sf("nextMaint",e.target.value)}/></FG><FG label="Condition" half><Sel value={form.condition||"Good"} onChange={e=>sf("condition",e.target.value)}>{["Excellent","Good","Fair","Needs Repair"].map(c=><option key={c}>{c}</option>)}</Sel></FG></Row></>) },
+    expense: { title: modal.mode === "add" ? "💸 Add Expense" : "✏️ Edit Expense", onSave: saveExpense, body: (<><Row><FG label="Date" half><Inp type="date" value={form.date||today()} onChange={e=>sf("date",e.target.value)}/></FG><FG label="Category" half><Sel value={form.cat||"Miscellaneous"} onChange={e=>sf("cat",e.target.value)}>{["Feed Purchase","Medicine/Vaccine","Labour/Wages","Utilities","Equipment Maintenance","Bird Purchase","Transport","Miscellaneous"].map(c=><option key={c}>{c}</option>)}</Sel></FG></Row><Row><FG label="Description" half><Inp value={form.desc||""} onChange={e=>sf("desc",e.target.value)}/></FG><FG label="Amount (₨) *" half><Inp type="number" value={form.amount||""} onChange={e=>sf("amount",e.target.value)}/></FG></Row><Row><FG label="Paid To" half><Inp value={form.payee||""} onChange={e=>sf("payee",e.target.value)}/></FG><FG label="Payment Method" half><Sel value={form.pay||"Cash"} onChange={e=>sf("pay",e.target.value)}>{["Cash","Bank Transfer","Cheque","Credit"].map(p=><option key={p}>{p}</option>)}</Sel></FG></Row></>) },
   }[modal?.type];
 
   return (
@@ -818,7 +753,6 @@ export default function PoultryApp() {
         select option{background:#21262d}
         tbody tr:hover td{background:rgba(48,54,61,.25)}
       `}</style>
-
       <aside style={{ width: 218, background: C.surface, borderRight: "1px solid #30363d", display: "flex", flexDirection: "column", position: "fixed", top: 0, bottom: 0, left: 0, overflowY: "auto", zIndex: 100 }}>
         <div style={{ padding: "20px 16px 15px", borderBottom: "1px solid #30363d" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -852,7 +786,6 @@ export default function PoultryApp() {
           </div>
         </div>
       </aside>
-
       <main style={{ marginLeft: 218, flex: 1, minHeight: "100vh" }}>
         <div style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(13,17,23,.93)", backdropFilter: "blur(12px)", borderBottom: "1px solid #30363d", padding: "11px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
@@ -862,15 +795,12 @@ export default function PoultryApp() {
         </div>
         <div style={{ padding: 22 }}><CurrentPage /></div>
       </main>
-
       {modal && MODALS && (
         <Modal open title={MODALS.title} onClose={closeModal} onSave={MODALS.onSave} saveLabel={modal.mode === "edit" ? "Update" : "Save"}>
           {MODALS.body}
         </Modal>
       )}
-
       <ConfirmDlg open={!!confirm} msg={confirm?.msg} onYes={confirm?.onYes} onNo={() => setConfirm(null)} />
-
       <div style={{ position: "fixed", bottom: 24, right: 24, zIndex: 9999, display: "flex", flexDirection: "column", gap: 8 }}>
         {toasts.map(t => (
           <div key={t.id} style={{ background: "#21262d", border: "1px solid #30363d", borderRadius: 10, padding: "11px 16px", fontSize: 13, display: "flex", alignItems: "center", gap: 10, minWidth: 230, boxShadow: "0 8px 32px rgba(0,0,0,.5)", animation: "slideIn .2s ease", borderLeft: `3px solid ${t.type === "success" ? C.green : t.type === "warn" ? C.accent : t.type === "error" ? C.red : C.blue}` }}>
@@ -879,5 +809,20 @@ export default function PoultryApp() {
         ))}
       </div>
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// ROOT APP — Header on all pages + Routes
+// ─────────────────────────────────────────────
+export default function App() {
+  return (
+    <>
+      <Header variant="default" />
+      <Routes>
+        <Route path="/" element={<HeroRoi />} />
+        <Route path="/dashboard" element={<PoultryApp />} />
+      </Routes>
+    </>
   );
 }
